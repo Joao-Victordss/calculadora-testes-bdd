@@ -3,11 +3,6 @@ Feature: Operações básicas da calculadora
     Como um usuário
     Eu quero usar a calculadora para somar, subtrair, multiplicar e dividir
 
-    Scenario: Somar dois números pela classe da calculadora
-        Given que iniciei a calculadora
-        When soma 5 e 3
-        Then o resultado deve ser 8
-
     Scenario Outline: Realizar operações pela interface gráfica
         Given que abri a interface da calculadora
         When pressiono os botões "<sequencia>"

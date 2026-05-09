@@ -1,0 +1,15 @@
+{
+  "name": "calculadora-web-bdd",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Calculadora web com testes BDD usando Cucumber.js.",
+  "scripts": {
+    "start": "http-server . -p 8000",
+    "test": "cucumber-js --require features/steps/*.js",
+    "test:bdd": "npm test"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.8.3",
+    "http-server": "^14.1.1"
+  }
+}

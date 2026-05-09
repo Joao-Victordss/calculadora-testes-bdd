@@ -1,39 +1,39 @@
-# calculadora-testes-bdd
+# Calculadora Web com Testes BDD
 
-Projeto simples de calculadora com interface web e testes BDD usando Python e Behave.
+Projeto simples de calculadora com interface web e testes BDD usando JavaScript, Cucumber.js e Gherkin.
+
+A aplicação testada é a própria interface web em `app/`. Os cenários BDD simulam o usuário pressionando os botões da calculadora e verificam o valor exibido no visor.
 
 ## Estrutura
 
 ```text
 .
-├── features/
-│   ├── calculadora.feature
-│   └── steps/
-│       └── calculadora_steps.py
 ├── app/
 │   ├── index.html
 │   ├── styles.css
 │   └── calculadora.js
+├── features/
+│   ├── calculadora.feature
+│   └── steps/
+│       └── calculadora_steps.js
 ├── tests/
 │   └── calculadora_ui_driver.js
-├── src/
-│   └── calculadora.py
 ├── .gitignore
-└── requirements.txt
+├── package-lock.json
+└── package.json
 ```
 
 ## Requisitos
 
-- Python 3
-- pip
 - Node.js
+- npm
 
 ## Instalação
 
 Instale as dependências do projeto:
 
 ```bash
-python3 -m pip install -r requirements.txt
+npm install
 ```
 
 ## Executando a interface gráfica
@@ -41,7 +41,7 @@ python3 -m pip install -r requirements.txt
 Abra o arquivo `app/index.html` no navegador ou sirva o projeto localmente:
 
 ```bash
-python3 -m http.server 8000
+npm run start
 ```
 
 Depois acesse:
@@ -56,16 +56,24 @@ Entre na pasta do projeto e execute:
 
 ```bash
 cd calculadora_app
-python3 -m behave
+npm test
 ```
 
-Se voce estiver na pasta `bdd`, o Behave vai procurar uma pasta `features` ali. Por isso o comando deve ser executado dentro de `calculadora_app`, onde estao `features/`, `app/`, `tests/` e `src/`.
+Se voce estiver na pasta `bdd`, o Cucumber vai procurar os arquivos do projeto no lugar errado. Por isso o comando deve ser executado dentro de `calculadora_app`, onde estao `features/`, `app/` e `tests/`.
 
-Os testes da interface simulam o comportamento do usuário pressionando os botões da calculadora web e verificando o valor mostrado no visor.
+Os testes simulam o comportamento do usuário pressionando os botões da calculadora web e verificando o valor mostrado no visor.
+
+Fluxo dos testes:
+
+1. O Cucumber.js lê os cenários em `features/calculadora.feature`.
+2. Cada passo Gherkin é executado pelo código em `features/steps/calculadora_steps.js`.
+3. O passo `When pressiono os botões ...` usa `tests/calculadora_ui_driver.js`.
+4. O driver carrega `app/calculadora.js`, simula os cliques e devolve o texto do visor.
+5. O passo `Then` compara o resultado obtido com o resultado esperado.
 
 ## Cenários cobertos
 
-A suíte atual possui 34 cenários BDD e 102 passos executados.
+A suíte atual possui 33 cenários BDD e 99 passos executados.
 
 Coberturas principais:
 

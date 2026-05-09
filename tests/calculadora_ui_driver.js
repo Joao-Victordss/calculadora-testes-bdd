@@ -21,10 +21,6 @@ const buttons = [
     { selector: ".key", dataset: { value: "." }, textContent: "." },
 ];
 
-const display = {
-    textContent: "0",
-};
-
 function createButton(definition) {
     const listeners = {};
 
@@ -43,33 +39,45 @@ function createButton(definition) {
     };
 }
 
-const buttonElements = buttons.map(createButton);
+function prepareTokens(sequence) {
+    const tokens = [];
 
-global.document = {
-    addEventListener(eventName, handler) {
-        if (eventName === "DOMContentLoaded") {
-            handler();
+    for (const token of sequence.trim().split(/\s+/)) {
+        if (/^\d*\.?\d+$/.test(token)) {
+            tokens.push(...token);
+        } else {
+            tokens.push(token);
         }
-    },
-    querySelector(selector) {
-        if (selector === "#display") {
-            return display;
-        }
+    }
 
-        return null;
-    },
-    querySelectorAll(selector) {
-        if (selector === ".key") {
-            return buttonElements;
-        }
+    return tokens;
+}
 
-        return [];
-    },
-};
+function createDocument(display, buttonElements) {
+    return {
+        addEventListener(eventName, handler) {
+            if (eventName === "DOMContentLoaded") {
+                handler();
+            }
+        },
+        querySelector(selector) {
+            if (selector === "#display") {
+                return display;
+            }
 
-require(path.join(__dirname, "..", "app", "calculadora.js"));
+            return null;
+        },
+        querySelectorAll(selector) {
+            if (selector === ".key") {
+                return buttonElements;
+            }
 
-function findButton(token) {
+            return [];
+        },
+    };
+}
+
+function findButton(buttonElements, token) {
     return buttonElements.find((button) => (
         button.dataset.value === token ||
         button.dataset.action === token ||
@@ -77,16 +85,34 @@ function findButton(token) {
     ));
 }
 
-const sequence = process.argv.slice(2);
-
-for (const token of sequence) {
-    const button = findButton(token);
-
-    if (!button) {
-        throw new Error(`Botão não encontrado: ${token}`);
-    }
-
-    button.click();
+function loadCalculator() {
+    const calculatorPath = path.join(__dirname, "..", "app", "calculadora.js");
+    delete require.cache[require.resolve(calculatorPath)];
+    require(calculatorPath);
 }
 
-process.stdout.write(display.textContent);
+function runCalculator(sequence) {
+    const display = { textContent: "0" };
+    const buttonElements = buttons.map(createButton);
+    global.document = createDocument(display, buttonElements);
+
+    loadCalculator();
+
+    for (const token of prepareTokens(sequence)) {
+        const button = findButton(buttonElements, token);
+
+        if (!button) {
+            throw new Error(`Botão não encontrado: ${token}`);
+        }
+
+        button.click();
+    }
+
+    return display.textContent;
+}
+
+if (require.main === module) {
+    process.stdout.write(runCalculator(process.argv.slice(2).join(" ")));
+}
+
+module.exports = { prepareTokens, runCalculator };
